@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool, cpu_count
 import concurrent.futures
 
-
+base_dir = os.getcwd()
 # scr_path_list = [x for x in glob.glob('/home/cps_lab/seungeun/ADNI/**/*.nii',recursive=True)]
-ref_path = '/home/cps_lab/seungeun/MRI/preprocessing/Ref_template/mni_icbm152_t1_tal_nlin_sym_09c.nii'
+ref_path = base_dir+ '/Ref_template/mni_icbm152_t1_tal_nlin_sym_09c.nii'
 
 
 def registration(src_path, ref_path = ref_path):
