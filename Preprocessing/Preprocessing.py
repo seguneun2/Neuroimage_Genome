@@ -28,15 +28,22 @@ import nipype.interfaces.io as nio
 # nii_file_path_list = glob.glob(ROOT_PATH + '**/*.nii*', recursive=True)   
 # t1w_files = nii_file_path_list[:3]
 
-
 #### TEST
 
-work_name = 'test4_raw_path'
 
 
+
+work_name = 'multi_test'
 working_directory = os.getcwd()
+ROOT_PATH = '/home/cps_lab/seungeun/MRI/preprocessing/test_raw_nii/'
+t1w_files = glob.glob(ROOT_PATH + '**/*.nii')   
+t1w_files = t1w_files[:2]
+print(t1w_files)
 ref_template = working_directory+'/Ref_template/mni_icbm152_t1_tal_nlin_sym_09c.nii'
 ref_crop = working_directory + './Ref_template/ref_cropped_template.nii.gz'
+
+#### multi processing
+n_procs = 32
 
 
 def crop_nifti(input_img, ref_crop):
@@ -55,9 +62,6 @@ def crop_nifti(input_img, ref_crop):
     from nibabel.spatialimages import SpatialImage
 
     basedir = os.getcwd()
-    # crop_ref = crop_img(ref_img, rtol=0.5)
-    # crop_ref.to_filename(os.path.join(basedir, os.path.basename(input_img).split('.nii')[0] + '_cropped_template.nii.gz'))
-    # crop_template = os.path.join(basedir, os.path.basename(input_img).split('.nii')[0] + '_cropped_template.nii.gz')
 
     # resample the individual MRI onto the cropped template image
     crop_img = resample_to_img(input_img, ref_crop, force_resample=True)
@@ -94,7 +98,7 @@ read_node = npe.Node(
                 ],
             synchronize=True,
             interface=nutil.IdentityInterface(fields=get_input_fields()),
-            n_procs=1
+            n_procs=n_procs
             )
 
 sub_id_node = npe.Node(
@@ -114,13 +118,15 @@ n4biascorrection_node = npe.Node(
                 dimension=3,
                 save_bias=True,
                 bspline_fitting_distance=600
-                )
+                ),
+            n_procs=n_procs
             )
 
 # 2. `RegistrationSynQuick` by *ANTS*. It uses nipype interface.
 ants_registration_node = npe.Node(
             name='antsRegistrationSynQuick',
-            interface=ants.RegistrationSynQuick()
+            interface=ants.RegistrationSynQuick(),
+            n_procs=n_procs
             )
 # sub_name = os.path.basename(ants_registration_node.inputs.moving_image[0]).split('/ADNI/')[1].split('/')[0] 
 ants_registration_node.inputs.fixed_image = ref_template
@@ -146,7 +152,7 @@ cropnifti = npe.Node(
 cropnifti.inputs.ref_crop = ref_crop
 
 
-# write node
+# write node ----> 폴더마다,,,,,,,되나....???????
 write_node = npe.Node(
                 name="Write",
                 interface=nio.DataSink()
@@ -172,9 +178,10 @@ wf.connect([
         (n4biascorrection_node, write_node, [('output_image', '@outfile_corr')]),
 ])
 
-wf.run()
+wf.run(plugin='MultiProc', plugin_args={'n_procs' : n_procs})
 
 wf.write_graph("workflow_graph.dot")
 from IPython.display import Image
 Image(filename="./workflow_graph.png")
+
 
