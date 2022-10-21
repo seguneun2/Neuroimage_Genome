@@ -1,5 +1,12 @@
 ### RESULT
 
+intensity 적용, no crop : size = (169, 208, 179)
+BCELogits
+resnet34 +  pretrained Mednet + requires grad = True 
+
+
+
+
 - EPOCH 50
 
 train Loss 0.63
