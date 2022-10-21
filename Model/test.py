@@ -1,12 +1,6 @@
 import pandas as pd
 import torch
-import nibabel as nib
-from tqdm import tqdm
-import numpy as np
-import matplotlib.pyplot as plt 
-import torchio as tio
-import os
-import torch.nn as nn
+from train import train
 
 
 df = '/home/cps_lab/seungeun/MRI/Label_File_path_df.csv'
@@ -34,4 +28,4 @@ MRI_Dataset = MRIdatamodule(df, train_ratio=0.8)
 MRI_Dataset.prepare_data()
 MRI_Dataset.setup()
 
-train(model=model, Epochs=300,train_loader=MRI_Dataset.train_loader, test_loader = MRI_Dataset.test_loader)
+train(model=model, Epochs=300,train_loader=MRI_Dataset.train_loader, test_loader = MRI_Dataset.test_loader, device= device)
