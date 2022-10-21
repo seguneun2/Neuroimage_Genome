@@ -40,15 +40,7 @@ class MRIdatamodule(torch.utils.data.Dataset):
         self.test_set = None
 
         self.batch_size = batch_size
-    
-    def get_max_shape(self, subjects):
-        print("get_max_shape ")
-        import numpy as np
-        dataset = tio.SubjectsDataset(subjects)
-        shapes = np.array([s.spatial_shape for s in dataset])
-        print(shapes.max(axis=0)) 
-        return shapes.max(axis=0)
-
+        
 
     def prepare_data(self):
         """
