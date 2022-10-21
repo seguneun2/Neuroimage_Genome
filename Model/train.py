@@ -2,6 +2,7 @@ import torch.nn as nn
 from tqdm import tqdm
 import numpy as np
 import torch
+import torchio as tio
 
 def validation(model, test_loader, criterion, device):
     model.eval()
