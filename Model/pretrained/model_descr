@@ -8,3 +8,7 @@ resnet_10_23dataset.pth: --model resnet --model_depth 10 --resnet_shortcut B
 resnet_18_23dataset.pth: --model resnet --model_depth 18 --resnet_shortcut A
 resnet_34_23dataset.pth: --model resnet --model_depth 34 --resnet_shortcut A
 resnet_50_23dataset.pth: --model resnet --model_depth 50 --resnet_shortcut B
+
+## google drive
+https://drive.google.com/file/d/13tnSvXY7oDIEloNFiGTsjUIYfS3g3BfG/view?pli=1
+
